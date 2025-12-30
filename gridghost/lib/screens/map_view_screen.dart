@@ -1,42 +1,65 @@
-
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../models/pole_model.dart'; // This is the crucial one!
-class MapViewScreen extends StatefulWidget {
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import '../models/pole_model.dart';
+
+class MapViewScreen extends StatelessWidget {
   const MapViewScreen({super.key});
 
-  @override
-  State<MapViewScreen> createState() => _MapViewScreenState();
-}
-
-class _MapViewScreenState extends State<MapViewScreen> {
-  // Mock data for "Theft Heatmap" from AIML stream
-  final List<DangerPole> _mockPoles = [
-    DangerPole(id: "P1", lat: 26.9124, lng: 75.7873, riskScore: 0.9),
-    DangerPole(id: "P2", lat: 26.9150, lng: 75.7890, riskScore: 0.7),
-  ];
+  // Mock danger pole data (AIML output)
+  List<DangerPole> get _mockPoles => [
+        DangerPole(id: "P1", lat: 26.9124, lng: 75.7873, riskScore: 0.9),
+        DangerPole(id: "P2", lat: 26.9150, lng: 75.7890, riskScore: 0.7),
+      ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(26.9124, 75.7873),
-          zoom: 14,
+      appBar: AppBar(title: const Text("Theft Risk Heatmap")),
+      body: FlutterMap(
+        options: const MapOptions(
+          initialCenter: LatLng(26.9124, 75.7873),
+          initialZoom: 14,
         ),
-        circles: _mockPoles.map((pole) => Circle(
-          circleId: CircleId(pole.id),
-          center: LatLng(pole.lat, pole.lng),
-          radius: 150,
-          fillColor: Colors.red.withValues(alpha: 0.3),
-          strokeColor: Colors.red,
-          strokeWidth: 1,
-        )).toSet(),
-        markers: _mockPoles.map((pole) => Marker(
-          markerId: MarkerId(pole.id),
-          position: LatLng(pole.lat, pole.lng),
-          infoWindow: InfoWindow(title: "Risk Score: ${pole.riskScore}"),
-        )).toSet(),
+        children: [
+          // 🌍 OpenStreetMap tiles (FREE)
+          TileLayer(
+            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            userAgentPackageName: 'com.example.gridghost',
+          ),
+
+          // 🔴 Risk Heat Circles
+          CircleLayer(
+            circles: _mockPoles.map((pole) {
+              return CircleMarker(
+                point: LatLng(pole.lat, pole.lng),
+                radius: 80,
+                useRadiusInMeter: true,
+                color: Colors.red.withValues(alpha: pole.riskScore),
+                borderStrokeWidth: 1,
+                borderColor: Colors.redAccent,
+              );
+            }).toList(),
+          ),
+
+          // 📍 Pole Markers
+          MarkerLayer(
+            markers: _mockPoles.map((pole) {
+              return Marker(
+                point: LatLng(pole.lat, pole.lng),
+                width: 40,
+                height: 40,
+                child: Icon(
+                  Icons.warning,
+                  color: pole.riskScore > 0.8
+                      ? Colors.red
+                      : Colors.orange,
+                  size: 30,
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

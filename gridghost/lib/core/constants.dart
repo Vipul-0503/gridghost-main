@@ -1,12 +1,12 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 class AppConstants {
-  // Replace with your actual backend URL from the AIML stream
-  static const String apiBaseUrl = "https://your-aiml-backend.com/api";
-  
-  // Default map position (Matches Jaipur coordinates from your screenshot)
-  static const LatLng defaultLocation = LatLng(26.9124, 75.7873);
-  
-  // UI Styles
+  static const String apiBaseUrl =
+      "https://your-aiml-backend.com/api";
+
+  // latlong2.LatLng is NOT const → must be final
+  static const LatLng defaultLocation =
+      LatLng(26.9124, 75.7873);
+
   static const double defaultPadding = 20.0;
 }
