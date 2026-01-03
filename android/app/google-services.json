@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "504168981994",
+    "project_id": "gridghost-55380",
+    "storage_bucket": "gridghost-55380.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504168981994:android:514b6a613fab6c4eeafe93",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwg3zwtlm8cRSakrpThT3A3weU5el5-kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
